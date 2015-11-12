@@ -3,7 +3,7 @@ var childProcess = require("child_process");
 var mongoose = require("mongoose");
 var crypto = require('crypto');
 
-var ObjectId = require('mongoose').Types.ObjectId; 
+var ObjectId = require('mongoose').Types.ObjectId;
 
 var spacemanSchema = mongoose.Schema({
     spacemanID: Number,
