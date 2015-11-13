@@ -38,8 +38,8 @@ module.exports = {
     },
 
     addSpaceman: function(spacemanID, spacemanData, averageVote, callback) {
-        var thisSpaceman = new user({ spacemanID: spacemanID, spacemanData: spacemanData, averageVote: averageVote });
-        user.findOne({ spacemanID: spacemanID }, function(err, users) {
+        var thisSpaceman = new spaceman({ spacemanID: spacemanID, spacemanData: spacemanData, averageVote: averageVote });
+        spaceman.findOne({ spacemanID: spacemanID }, function(err, users) {
             if (users == undefined) {
                 thisSpaceman.save(function(err, self) {
                     if (err) console.log("database.js - " + "[Spacey] ".red + err.red);
@@ -48,6 +48,13 @@ module.exports = {
             } else {
                 callback("existingID");
             }
+        });
+    },
+
+    getSpacemen: function(callback){
+        spaceman.find({},function(err, spacemen){
+            if (err) console.log("database.js - " + "[Spacey] ".red + err.red);
+            callback(spacemen);
         });
     }
 }

@@ -73,6 +73,7 @@ for (i=0; i<map.length; i++) {
 
 var socket = io();
 socket.on('map', function(msg){
+	console.log(msg);
 	data = JSON.parse(msg);
 	drawBitmap(data);
   	console.log(data);
