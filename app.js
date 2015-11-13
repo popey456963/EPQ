@@ -36,7 +36,7 @@ io.sockets.on('connection', function(socket){
 database.getSpacemen(function(data){console.log(data);console.log("Listed Spacemen");});
 // database.getNumberOfSpacemen(function(data){console.log(data);console.log("Listed Number of Spacemen");});
 bitmap.makeBaseGenerations(database);
-//database.manipulateEntry("id", "change", bitmap);
+database.manipulateEntry("5645ee25e99ada3c3731d6b0", "change", bitmap);
 
 
 http.listen(3000, function() {

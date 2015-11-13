@@ -69,6 +69,8 @@ module.exports = {
     },
 
     manipulateEntry: function(id, chance, bitmap) {
-        spaceman.findOne({_id = id})
+        spaceman.findOne({_id: id}, function(data){
+            console.log(data);
+        });
     }
 }
