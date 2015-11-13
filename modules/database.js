@@ -65,11 +65,10 @@ module.exports = {
         spaceman.remove({}, function(data){
             console.log("Cleared All Data: " + data);
             callback(data);
-        })   
+        })
     },
 
-    manipulateEntry: function(id, chance) {
-        console.log("Manipulate Entry Called")
+    manipulateEntry: function(id, chance, bitmap) {
+        spaceman.findOne({_id = id})
     }
-
 }

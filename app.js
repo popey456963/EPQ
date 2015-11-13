@@ -36,8 +36,8 @@ io.sockets.on('connection', function(socket){
 database.getSpacemen(function(data){console.log(data);console.log("Listed Spacemen");});
 // database.getNumberOfSpacemen(function(data){console.log(data);console.log("Listed Number of Spacemen");});
 bitmap.makeBaseGenerations(database);
+//database.manipulateEntry("id", "change", bitmap);
 
-console.log(bitmap.migrateBitmap([0,0,0,1,1,1]));
 
 http.listen(3000, function() {
     console.log("app.js      - " + "[Spacey] Running at ".green + "http://localhost:3000".blue);

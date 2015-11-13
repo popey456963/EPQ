@@ -26,18 +26,19 @@ module.exports = {
 
 	migrateBitmap: function(oldmap, callback) {
 		for (i=0; i<oldmap.length; i++) {
-			for (j=0; j<oldmap[i].lenth; j++) {
+			for (j=0; j<oldmap[i].length; j++) {
 				var randomNumber = Math.random();
+				console.log(randomNumber);
 				if (randomNumber < 1/16) {
-					if (v[i][j] == 0) {
-						v[i][j] = 1;
+					if (oldmap[i][j] == 0) {
+						oldmap[i][j] = 1;
 					} else {
-						v[i][j] = 0;
+						oldmap[i][j] = 0;
 					}
 				}
 			}
 		}
-		callback(newmap);
+		callback(oldmap);
 	},
 
 	getGenerateMap: function(callback) {
