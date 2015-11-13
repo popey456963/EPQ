@@ -1,28 +1,3 @@
-/*
-function generateBitmap(bits) {
-	var bitmap = new Array(bits);
-	for (i=0; i<bitmap.length; i++) {
-		bitmap[i] = new Array(bits);
-	}
-	for (i=0; i<bitmap.length; i++) {
-		for (j=0; j<bitmap[i].length; j++) {
-			if (Math.random() > 0.5) {
-				bitmap[i][j] = 0;
-			} else {
-				bitmap[i][j] = 1;
-			}
-			
-		}
-	}
-	console.log("Height of Bits: " + bits);
-	console.log("Area of Bitmap: " + bits*bits);
-	for (i=0; i<bitmap.length; i++) {
-		console.log(bitmap[i].join(" | "))
-	}
-	return bitmap;
-}
-*/
-
 function draw(x, y, bits, on) {
   var x = x * 32;
   var y = y * 32;
@@ -46,9 +21,13 @@ function draw(x, y, bits, on) {
   }
 }
 
+function changeID(newID){
+	document.getElementById("id").innerHTML = newID;
+}
+
 function drawBitmap(map) {
 	for (i=0; i<map.length; i++) {
-		for (j=0; j<map.length; j++) {
+		for (j=0; j<map[i].length; j++) {
 			if (map[i][j] == 1) {
 				draw(i, j, 16, true);
 			} else {
@@ -57,34 +36,33 @@ function drawBitmap(map) {
 		}
 	}
 }
-/*
-var map = generateBitmap(16);
 
-for (i=0; i<map.length; i++) {
-	for (j=0; j<map.length; j++) {
-		if (map[i][j] == 1) {
-			draw(i, j, 16, true);
-		} else {
-			draw(i, j, 16, false);
+function socket() {
+	var socket = io();
+	socket.on('map', function(data){
+		data = JSON.parse(data);
+		spacemanData = data.spacemanData.substr(3, data.spacemanData.length-3).split("],[");
+		var dataArray = [];
+		for (i=0; i<spacemanData.length; i++) {
+			dataArray.push(spacemanData[i].split(","));
 		}
-	}
+		drawBitmap(dataArray);
+		console.log("Drew Bits");
+		changeID(data._id);
+	});	
 }
-*/
 
-var socket = io();
-socket.on('map', function(msg){
-	console.log(msg);
-	data = JSON.parse(msg);
-	drawBitmap(data);
-  	console.log(data);
-});
+function background() {
+	var rn = Math.floor((Math.random() * 150) + 60);
+	var rs = Math.floor((Math.random() * 11) + 4);
+	var t = new Trianglify({
+	 x_gradient: Trianglify.colorbrewer.Spectral[rs],
+	    noiseIntensity: 0,
+	    cellsize: rn
+	});
+	var pattern = t.generate(window.innerWidth, window.innerWidth+200);
+	document.body.setAttribute('style', 'background-image: '+pattern.dataUrl);
+}
 
-var rn = Math.floor((Math.random() * 150) + 60);
-var rs = Math.floor((Math.random() * 11) + 4);
-var t = new Trianglify({
- x_gradient: Trianglify.colorbrewer.Spectral[rs],
-    noiseIntensity: 0,
-    cellsize: rn
-});
-var pattern = t.generate(window.innerWidth, window.innerWidth+200);
-document.body.setAttribute('style', 'background-image: '+pattern.dataUrl);
+socket();
+background();

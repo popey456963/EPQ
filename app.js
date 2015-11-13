@@ -18,26 +18,29 @@ app.get("/", function(req, res) {
     });
 });
 
-io.on('connection', function(socket){
-  console.log("app.js      - " + "[Spacey] ".green + "A User Connected".blue);
-  map = bitmap.getGenerateMap();
-  socket.emit('map', JSON.stringify(map));
+io.sockets.on('connection', function(socket){
+  	var clientIp = socket.request.connection.remoteAddress;
+  	console.log("app.js      - " + "[Spacey] ".green + "A User Connected From ".blue + clientIp);
 
-  socket.on('chat message', function(msg){
-    socket.emit('chat message', msg);
-  });
 
-  socket.on('disconnect', function(){
-    console.log("app.js      - " + "[Spacey] ".green + "A User Disconnected".blue);
-  });
+  	database.returnRandomSpaceman( function(data) {
+		socket.emit('map', JSON.stringify(data));
+	});
+
+  	socket.on('disconnect', function(){
+    	console.log("app.js      - " + "[Spacey] ".green + "A User Disconnected".blue);
+  	});
 });
 
-database.addSpaceman("1", "[[1,1,0,0,0,0,0,1,1,1,0,0,1,1,0,0],[1,1,0,1,0,0,1,1,1,0,0,1,0,0,1,1],[1,0,0,1,0,1,0,1,0,1,0,0,1,0,0,1],[1,1,0,0,0,0,0,1,0,1,1,1,1,1,0,1],[1,1,0,1,0,0,1,0,0,1,0,1,0,1,1,0],[0,0,1,0,0,1,1,0,1,0,0,0,1,1,1,0],[0,1,0,0,1,0,0,0,1,0,1,0,0,1,0,1],[0,1,0,0,1,1,0,0,1,0,1,1,1,1,1,0],[1,0,0,0,1,0,1,0,1,1,1,1,1,1,1,0],[1,1,1,0,0,1,1,1,1,1,1,0,1,0,1,0],[1,0,1,1,1,0,1,1,1,1,0,1,1,1,1,1],[1,0,0,1,1,1,0,1,0,1,0,1,1,0,0,0],[1,0,1,0,0,0,0,0,1,1,1,1,0,1,0,0],[0,0,0,0,0,0,1,1,1,1,0,1,1,0,0,1],[1,1,0,0,0,1,0,1,1,1,0,0,1,1,0,0],[1,1,1,0,0,1,1,1,1,1,1,0,1,1,1,1]]", 12, function(result){console.log(result); console.log("Added Spaceman");});
-database.getSpacemen(function(data){console.log(data);console.log("Listed Spacemen");})
+//database.clearSpaceman(function(){});
+database.getSpacemen(function(data){console.log(data);console.log("Listed Spacemen");});
+// database.getNumberOfSpacemen(function(data){console.log(data);console.log("Listed Number of Spacemen");});
+bitmap.makeBaseGenerations(database);
+
+console.log(bitmap.migrateBitmap([0,0,0,1,1,1]));
 
 http.listen(3000, function() {
     console.log("app.js      - " + "[Spacey] Running at ".green + "http://localhost:3000".blue);
-    database.clearSessions();
     setTimeout(function() {
         database.connectToMongo();
     }, 1000);

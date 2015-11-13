@@ -1,22 +1,15 @@
 var colors = require("colors");
 var childProcess = require("child_process");
 var mongoose = require("mongoose");
+var ObjectId = require('mongoose').Types.ObjectId;
 var crypto = require('crypto');
 
-var ObjectId = require('mongoose').Types.ObjectId;
-
 var spacemanSchema = mongoose.Schema({
-    spacemanID: Number,
     spacemanData: String,
-    averageVote: Number
+    averageVote: Number,
+    peopleVote: Number
 });
 
-var sessionSchema = mongoose.Schema({
-    sessionSocket: String,
-    email: String
-});
-
-var session = mongoose.model("session", sessionSchema);
 var spaceman = mongoose.model("spaceman", spacemanSchema);
 
 module.exports = {
@@ -31,22 +24,16 @@ module.exports = {
         });
     },
 
-    clearSessions: function(callback) {
-        session.remove({}, function() { 
-        	console.log("database.js - " + "[Spacey] Cleared Sessions".green); 
-        });
-    },
-
-    addSpaceman: function(spacemanID, spacemanData, averageVote, callback) {
-        var thisSpaceman = new spaceman({ spacemanID: spacemanID, spacemanData: spacemanData, averageVote: averageVote });
-        spaceman.findOne({ spacemanID: spacemanID }, function(err, users) {
+    addSpaceman: function(spacemanData, averageVote, peopleVote, callback) {
+        var thisSpaceman = new spaceman({ spacemanData: spacemanData, averageVote: averageVote, peopleVote: peopleVote });
+        spaceman.findOne({ spacemanData: spacemanData }, function(err, users) {
             if (users == undefined) {
                 thisSpaceman.save(function(err, self) {
                     if (err) console.log("database.js - " + "[Spacey] ".red + err.red);
                     callback(true);
                 });
             } else {
-                callback("existingID");
+                callback("existingData");
             }
         });
     },
@@ -56,5 +43,33 @@ module.exports = {
             if (err) console.log("database.js - " + "[Spacey] ".red + err.red);
             callback(spacemen);
         });
+    },
+
+    getNumberOfSpacemen: function(callback) {
+        spaceman.count({}, function( err, count){
+            callback(count);
+        });
+    },
+
+    returnRandomSpaceman: function(callback) {
+        module.exports.getNumberOfSpacemen(function(count) {
+            var randomNumber = Math.floor((Math.random() * count));
+            spaceman.find({}, function(err, spacemen){
+                if (err) console.log("database.js - " + "[Spacey] ".red + err.red);
+                callback(spacemen[randomNumber]);
+            })
+        });
+    },
+
+    clearSpaceman: function(callback) {
+        spaceman.remove({}, function(data){
+            console.log("Cleared All Data: " + data);
+            callback(data);
+        })   
+    },
+
+    manipulateEntry: function(id, chance) {
+        console.log("Manipulate Entry Called")
     }
+
 }
