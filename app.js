@@ -2,8 +2,7 @@ var app = require("express")();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
 var fs = require("fs");
-var git = require('git-rev');
-var prettyjson = require('prettyjson');
+var color = require("colors");
 
 console.log("app.js      - " + "[Spacey] Loaded initial requirements".green);
 
@@ -17,6 +16,20 @@ app.get("/", function(req, res) {
     fs.readFile("public/index.html", "utf-8", function(err, data) {
         res.send(data);
     });
+});
+
+io.on('connection', function(socket){
+  console.log("app.js      - " + "[Spacey] ".green + "A User Connected".blue);
+  map = bitmap.getGenerateMap();
+  socket.emit('map', JSON.stringify(map));
+
+  socket.on('chat message', function(msg){
+    socket.emit('chat message', msg);
+  });
+
+  socket.on('disconnect', function(){
+    console.log("app.js      - " + "[Spacey] ".green + "A User Disconnected".blue);
+  });
 });
 
 http.listen(3000, function() {

@@ -1,3 +1,4 @@
+/*
 function generateBitmap(bits) {
 	var bitmap = new Array(bits);
 	for (i=0; i<bitmap.length; i++) {
@@ -20,6 +21,7 @@ function generateBitmap(bits) {
 	}
 	return bitmap;
 }
+*/
 
 function draw(x, y, bits, on) {
   var x = x * 32;
@@ -44,6 +46,18 @@ function draw(x, y, bits, on) {
   }
 }
 
+function drawBitmap(map) {
+	for (i=0; i<map.length; i++) {
+		for (j=0; j<map.length; j++) {
+			if (map[i][j] == 1) {
+				draw(i, j, 16, true);
+			} else {
+				draw(i, j, 16, false);
+			}
+		}
+	}
+}
+/*
 var map = generateBitmap(16);
 
 for (i=0; i<map.length; i++) {
@@ -55,6 +69,14 @@ for (i=0; i<map.length; i++) {
 		}
 	}
 }
+*/
+
+var socket = io();
+socket.on('map', function(msg){
+	data = JSON.parse(msg);
+	drawBitmap(data);
+  	console.log(data);
+});
 
 var rn = Math.floor((Math.random() * 150) + 60);
 var rs = Math.floor((Math.random() * 11) + 4);
